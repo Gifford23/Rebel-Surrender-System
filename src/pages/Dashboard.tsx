@@ -1,18 +1,22 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { profiles } from "../data/mockData"; // Import the data
+import { useNavigate } from "react-router-dom";
+import { profiles } from "../data/mockData";
 import "./Dashboard.css";
+import { FaChartPie, FaUsers, FaFileAlt, FaCog } from "react-icons/fa";
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"overview" | "records">(
     "overview"
   );
+  const navigate = useNavigate();
 
   return (
     <div className="dashboard-layout">
+      {/* Sidebar */}
       <aside className="sidebar">
-        <div className="logo-area">
-          <h2>NRIS Portal</h2>
+        <div className="sidebar-header">
+          <h3>Admin Panel</h3>
+          <p>Logged in as Officer</p>
         </div>
         <ul className="nav-links">
           <li>
@@ -20,7 +24,7 @@ const Dashboard: React.FC = () => {
               className={`nav-btn ${activeTab === "overview" ? "active" : ""}`}
               onClick={() => setActiveTab("overview")}
             >
-              Overview
+              <FaChartPie /> Overview
             </button>
           </li>
           <li>
@@ -28,38 +32,63 @@ const Dashboard: React.FC = () => {
               className={`nav-btn ${activeTab === "records" ? "active" : ""}`}
               onClick={() => setActiveTab("records")}
             >
-              Master List
+              <FaUsers /> Master List
+            </button>
+          </li>
+          <li>
+            <button className="nav-btn">
+              <FaFileAlt /> Reports
+            </button>
+          </li>
+          <li>
+            <button className="nav-btn">
+              <FaCog /> Settings
             </button>
           </li>
         </ul>
       </aside>
 
-      <div className="main-content">
-        <header className="dashboard-header">
+      {/* Main Content */}
+      <main className="main-content">
+        <header className="page-header">
           <h1>
             {activeTab === "overview"
               ? "System Overview"
               : "Surrenderee Records"}
           </h1>
+          <p>
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
         </header>
 
         {activeTab === "overview" && (
-          <div className="dashboard-grid">
-            {/* Dynamic Cards based on Data */}
+          <div className="cards-grid">
             {profiles.map((profile) => (
               <div key={profile.id} className="profile-card">
                 <div className="card-header">
                   <img src={profile.imageUrl} alt={profile.name} />
-                  <h3>{profile.name}</h3>
-                  <span>ID: {profile.id}</span>
+                  <div>
+                    <h3>{profile.name}</h3>
+                    <span className="id-tag">{profile.id}</span>
+                  </div>
                 </div>
                 <div className="card-body">
-                  <span className={`badge ${profile.status.toLowerCase()}`}>
+                  <span
+                    className={`status-badge ${profile.status.toLowerCase()}`}
+                  >
                     {profile.status}
                   </span>
-                  <Link to={`/profile/${profile.id}`} className="btn-action">
+                  <button
+                    className="btn-action"
+                    onClick={() => navigate(`/profile/${profile.id}`)}
+                  >
                     View Profile
-                  </Link>
+                  </button>
                 </div>
               </div>
             ))}
@@ -68,12 +97,13 @@ const Dashboard: React.FC = () => {
 
         {activeTab === "records" && (
           <div className="table-container">
-            <table>
+            <table className="modern-table">
               <thead>
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
                   <th>Alias</th>
+                  <th>Barangay</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -82,15 +112,25 @@ const Dashboard: React.FC = () => {
                 {profiles.map((p) => (
                   <tr key={p.id}>
                     <td>{p.id}</td>
-                    <td>{p.name}</td>
-                    <td>{p.alias}</td>
                     <td>
-                      <span className={`badge ${p.status.toLowerCase()}`}>
+                      <strong>{p.name}</strong>
+                    </td>
+                    <td style={{ fontStyle: "italic" }}>{p.alias}</td>
+                    <td>{p.barangay}</td>
+                    <td>
+                      <span
+                        className={`status-badge ${p.status.toLowerCase()}`}
+                      >
                         {p.status}
                       </span>
                     </td>
                     <td>
-                      <Link to={`/profile/${p.id}`}>View</Link>
+                      <button
+                        className="btn-sm"
+                        onClick={() => navigate(`/profile/${p.id}`)}
+                      >
+                        View
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -98,7 +138,7 @@ const Dashboard: React.FC = () => {
             </table>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 };

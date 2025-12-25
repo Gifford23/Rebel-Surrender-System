@@ -1,80 +1,71 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { profiles } from "../data/mockData";
 import "./Profile.css";
+import { FaArrowLeft, FaPrint, FaCheckCircle } from "react-icons/fa";
 
 const Profile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const profile = profiles.find((p) => p.id === id);
 
-  // Mock user data - in a real app, this would come from an API
-  const user = {
-    id: id || "unknown",
-    name: "Juan Dela Cruz",
-    role: "Surrenderee",
-    status: "In Process",
-    joinDate: "2023-01-15",
-    contact: "+63 912 345 6789",
-    email: "juan.delacruz@example.com",
-    address: "123 Peace St., Quezon City, Philippines",
-  };
+  if (!profile) return <div className="not-found">Profile not found.</div>;
 
   return (
     <div className="profile-container">
-      <div className="profile-header">
-        <h1>User Profile</h1>
-        <p className="profile-subtitle">View and manage user information</p>
-      </div>
+      <button className="btn-back" onClick={() => navigate("/dashboard")}>
+        <FaArrowLeft /> Back to Dashboard
+      </button>
 
-      <div className="profile-content">
-        <div className="profile-card">
-          <div className="profile-avatar">
-            <div className="avatar-placeholder">
-              {user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
+      <div className="profile-paper">
+        <div className="profile-header">
+          <div className="header-left">
+            <img
+              src={profile.imageUrl}
+              alt={profile.name}
+              className="profile-pic-lg"
+            />
+            <div>
+              <h1>{profile.name}</h1>
+              <div className="meta-tags">
+                <span className="id-badge">ID: {profile.id}</span>
+                <span
+                  className={`status-badge ${profile.status.toLowerCase()}`}
+                >
+                  {profile.status}
+                </span>
+              </div>
             </div>
           </div>
-
-          <div className="profile-details">
-            <div className="detail-row">
-              <span className="detail-label">Name:</span>
-              <span className="detail-value">{user.name}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Role:</span>
-              <span className="detail-value">{user.role}</span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Status:</span>
-              <span
-                className={`status-badge status-${user.status
-                  .toLowerCase()
-                  .replace(" ", "-")}`}
-              >
-                {user.status}
-              </span>
-            </div>
-            <div className="detail-row">
-              <span className="detail-label">Member Since:</span>
-              <span className="detail-value">{user.joinDate}</span>
-            </div>
-          </div>
+          <button className="btn-print">
+            <FaPrint /> Print Record
+          </button>
         </div>
 
-        <div className="profile-section">
-          <h2>Contact Information</h2>
-          <div className="info-grid">
-            <div className="info-item">
-              <span className="info-label">Email</span>
-              <span className="info-value">{user.email}</span>
-            </div>
-            <div className="info-item">
-              <span className="info-label">Phone</span>
-              <span className="info-value">{user.contact}</span>
-            </div>
-            <div className="info-item full-width">
-              <span className="info-label">Address</span>
-              <span className="info-value">{user.address}</span>
+        <div className="profile-grid">
+          <div className="info-group">
+            <label>Alias / AKA</label>
+            <p>{profile.alias}</p>
+          </div>
+          <div className="info-group">
+            <label>Age</label>
+            <p>{profile.age} years old</p>
+          </div>
+          <div className="info-group">
+            <label>Barangay</label>
+            <p>{profile.barangay}</p>
+          </div>
+          <div className="info-group">
+            <label>Date of Surrender</label>
+            <p>{profile.surrenderDate}</p>
+          </div>
+          <div className="info-group full">
+            <label>Verification Status</label>
+            <div className="status-box">
+              <FaCheckCircle className="icon-success" />
+              <span>
+                Identity Verified by 4th Infantry Division Intelligence Unit.
+              </span>
             </div>
           </div>
         </div>
