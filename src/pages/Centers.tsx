@@ -3,12 +3,7 @@ import "./centers.css";
 import { FaMapMarkerAlt, FaPhoneAlt, FaShieldAlt } from "react-icons/fa";
 
 const Centers: React.FC = () => {
-  // Default map
-  const [mapImage, setMapImage] = useState(
-    "https://via.placeholder.com/1200x800/1e293b/ffffff?text=Select+a+Center+to+View+Map"
-  );
-  const [activeId, setActiveId] = useState<number | null>(null);
-
+  // We use specific Google Maps Embed URLs for accuracy
   const centers = [
     {
       id: 1,
@@ -16,7 +11,9 @@ const Centers: React.FC = () => {
       type: "Military",
       address: "Patag, Cagayan de Oro City",
       phone: "(088) 858-1234",
-      img: "https://via.placeholder.com/1200x800/1e293b/ffffff?text=Map:+Camp+Evangelista",
+      // Accurate coordinates/query for Camp Evangelista
+      mapUrl:
+        "https://maps.google.com/maps?q=Camp+Evangelista+Patag+Cagayan+de+Oro&t=&z=15&ie=UTF8&iwloc=&output=embed",
     },
     {
       id: 2,
@@ -24,29 +21,38 @@ const Centers: React.FC = () => {
       type: "Police",
       address: "Camp Alagar, Lapasan, CDO",
       phone: "(088) 123-4567",
-      img: "https://via.placeholder.com/1200x800/2563eb/ffffff?text=Map:+Camp+Alagar",
+      // Accurate coordinates/query for Camp Alagar
+      mapUrl:
+        "https://maps.google.com/maps?q=Camp+Alagar+Lapasan+Cagayan+de+Oro&t=&z=15&ie=UTF8&iwloc=&output=embed",
     },
     {
       id: 3,
-      name: "City Social Welfare",
+      name: "City Social Welfare (CSWD)",
       type: "Civilian",
       address: "City Hall Compound, CDO",
       phone: "(088) 999-8888",
-      img: "https://via.placeholder.com/1200x800/f59e0b/ffffff?text=Map:+City+Social+Welfare",
+      // Accurate coordinates/query for City Hall CDO
+      mapUrl:
+        "https://maps.google.com/maps?q=City+Hall+Cagayan+de+Oro&t=&z=16&ie=UTF8&iwloc=&output=embed",
     },
   ];
 
-  const handleSelect = (id: number, img: string) => {
+  // Default to the first center's map
+  const [activeMap, setActiveMap] = useState(centers[0].mapUrl);
+  const [activeId, setActiveId] = useState<number>(centers[0].id);
+
+  const handleSelect = (id: number, url: string) => {
     setActiveId(id);
-    setMapImage(img);
+    setActiveMap(url);
   };
 
   return (
     <div className="centers-layout">
+      {/* Left List Panel */}
       <div className="centers-list">
         <div className="list-header">
           <h2>Assistance Centers</h2>
-          <p>Select a location to view on map</p>
+          <p>Select a location to update the map</p>
         </div>
         <div className="list-scroll">
           {centers.map((center) => (
@@ -55,7 +61,7 @@ const Centers: React.FC = () => {
               className={`center-card ${
                 activeId === center.id ? "active" : ""
               }`}
-              onClick={() => handleSelect(center.id, center.img)}
+              onClick={() => handleSelect(center.id, center.mapUrl)}
             >
               <div className="card-top">
                 <h4>{center.name}</h4>
@@ -71,8 +77,20 @@ const Centers: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Right Map Panel with Live Iframe */}
       <div className="centers-map">
-        <img src={mapImage} alt="Map View" />
+        <iframe
+          title="Map Location"
+          src={activeMap}
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen={true}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+        ></iframe>
+
         <div className="map-overlay">
           <FaShieldAlt /> Secure Government Facility
         </div>

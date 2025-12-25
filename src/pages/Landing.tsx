@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Landing.css";
-// Ensure you have react-icons installed
+// Ensure react-icons is installed
 import {
   FaShieldAlt,
   FaHandHoldingUsd,
@@ -15,7 +15,7 @@ import {
 const Landing: React.FC = () => {
   return (
     <div className="landing-page">
-      {/* --- Public Navbar (Specific to Landing) --- */}
+      {/* --- Public Navbar --- */}
       <nav className="landing-navbar">
         <div className="landing-nav-container">
           <div className="logo-section">
@@ -50,8 +50,9 @@ const Landing: React.FC = () => {
             today.
           </p>
           <div className="hero-actions">
+            {/* UPDATED BUTTON HERE */}
             <Link to="/centers" className="btn-hero-primary">
-              Find Nearest Center
+              Locate Center
             </Link>
             <a href="#benefits" className="btn-hero-secondary">
               View Benefits
