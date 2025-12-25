@@ -1,71 +1,80 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   FaBars,
   FaTimes,
-  FaHome,
-  FaBuilding,
-  FaUser,
-  FaChartLine,
+  FaThLarge,
+  FaMapMarkedAlt,
+  FaUserCircle,
+  FaSignOutAlt,
 } from "react-icons/fa";
+import "./Navbar.css"; // We will add styling for this below
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
   const navItems = [
-    { to: "/dashboard", icon: <FaHome />, label: "Dashboard" },
-    { to: "/centers", icon: <FaBuilding />, label: "Centers" },
-    { to: "/profile/1", icon: <FaUser />, label: "Profile" },
+    { path: "/dashboard", label: "Dashboard", icon: <FaThLarge /> },
+    { path: "/centers", label: "Assistance Centers", icon: <FaMapMarkedAlt /> },
+    {
+      path: "/profile/RS-2025-001",
+      label: "My Record",
+      icon: <FaUserCircle />,
+    },
   ];
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const offset = window.scrollY;
-      if (offset > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
-    <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
+    <nav className="main-navbar">
       <div className="navbar-container">
-        <Link to="/dashboard" className="navbar-logo">
-          <FaChartLine className="logo-icon" />
-          <span>NRIS Portal</span>
+        {/* Brand / Logo */}
+        <Link to="/dashboard" className="navbar-brand">
+          <div className="brand-logo">
+            <i className="fa-solid fa-scale-balanced"></i>
+          </div>
+          <div className="brand-text">
+            <span className="brand-subtitle">
+              Government of the Philippines
+            </span>
+            <span className="brand-title">NRIS Portal</span>
+          </div>
         </Link>
 
-        <div className="menu-icon" onClick={() => setIsOpen(!isOpen)}>
+        {/* Desktop Menu */}
+        <ul className={`nav-menu ${isOpen ? "active" : ""}`}>
+          {navItems.map((item) => (
+            <li key={item.path} className="nav-item">
+              <Link
+                to={item.path}
+                className={`nav-link ${
+                  location.pathname.startsWith(item.path) ? "active" : ""
+                }`}
+                onClick={() => setIsOpen(false)}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </Link>
+            </li>
+          ))}
+          {/* Logout Button */}
+          <li className="nav-item">
+            <Link
+              to="/"
+              className="nav-link logout-btn"
+              onClick={() => setIsOpen(false)}
+            >
+              <FaSignOutAlt />
+              <span>Log Out</span>
+            </Link>
+          </li>
+        </ul>
+
+        {/* Mobile Toggle */}
+        <div className="mobile-toggle" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <FaTimes /> : <FaBars />}
         </div>
-
-        <nav className={isOpen ? "nav-menu active" : "nav-menu"}>
-          <ul className="nav-menu-items">
-            {navItems.map((item, index) => (
-              <li key={index} className="nav-item">
-                <Link
-                  to={item.to}
-                  className={`nav-links ${
-                    location.pathname === item.to ? "active" : ""
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  <span className="nav-icon">{item.icon}</span>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
       </div>
-    </header>
+    </nav>
   );
 };
 

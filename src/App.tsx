@@ -11,6 +11,7 @@ import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import Centers from "./pages/Centers";
 import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./App.css";
@@ -41,6 +42,7 @@ function AppContent() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/centers" element={<Centers />} />
           <Route path="/profile/:id" element={<Profile />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 
